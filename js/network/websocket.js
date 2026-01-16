@@ -9,6 +9,8 @@ export class GameWebSocket {
     this.isConnected = false;
     this.reconnectAttempts = 0;
     this.onMessageCallbacks = [];
+    this.onOpenCallbacks = [];
+    this.onCloseCallbacks = [];
   }
 
   /**
@@ -40,6 +42,9 @@ export class GameWebSocket {
     
     // Send a test message
     this.send({ type: 'hello', data: 'Client connected' });
+    
+    // Trigger callbacks
+    this.onOpenCallbacks.forEach(callback => callback());
   }
 
   /**
@@ -70,6 +75,9 @@ export class GameWebSocket {
   handleClose(event) {
     console.log('Disconnected from game server', event.code, event.reason);
     this.isConnected = false;
+    
+    // Trigger callbacks
+    this.onCloseCallbacks.forEach(callback => callback(event));
     
     if (!event.wasClean) {
       this.scheduleReconnect();
@@ -111,6 +119,20 @@ export class GameWebSocket {
    */
   onMessage(callback) {
     this.onMessageCallbacks.push(callback);
+  }
+
+  /**
+   * Register callback for connection open
+   */
+  onOpen(callback) {
+    this.onOpenCallbacks.push(callback);
+  }
+
+  /**
+   * Register callback for connection close
+   */
+  onClose(callback) {
+    this.onCloseCallbacks.push(callback);
   }
 
   /**

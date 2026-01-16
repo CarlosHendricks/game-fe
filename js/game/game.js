@@ -19,29 +19,34 @@ export function initGame(canvas) {
   // Create WebSocket connection
   const ws = new GameWebSocket();
   let connectionStatus = 'Connecting...';
+  let clientCount = 0;
 
   // Listen to messages
   ws.onMessage((data) => {
     console.log('Game received:', data);
+    
+    // Handle client count updates
+    if (data.type === 'client_count') {
+      clientCount = data.data.count;
+      draw();
+    }
+  });
+
+  // Listen to connection open
+  ws.onOpen(() => {
+    connectionStatus = 'Connected';
+    draw();
+  });
+
+  // Listen to connection close
+  ws.onClose((event) => {
+    connectionStatus = 'Disconnected';
+    clientCount = 0;
+    draw();
   });
 
   // Connect to server
   ws.connect();
-
-  // Update connection status
-  const originalHandleOpen = ws.handleOpen.bind(ws);
-  ws.handleOpen = function() {
-    connectionStatus = 'Connected';
-    draw();
-    originalHandleOpen();
-  };
-
-  const originalHandleClose = ws.handleClose.bind(ws);
-  ws.handleClose = function(event) {
-    connectionStatus = 'Disconnected';
-    draw();
-    originalHandleClose(event);
-  };
 
   // Draw function
   function draw() {
@@ -66,6 +71,14 @@ export function initGame(canvas) {
     ctx.fillStyle = statusColor;
     ctx.font = '20px monospace';
     ctx.fillText(`Server: ${connectionStatus}`, canvas.width / 2, canvas.height / 2 + 100);
+    
+    // Draw client count
+    if (ws.isConnected) {
+      ctx.fillStyle = '#00ccff';
+      ctx.font = '24px monospace';
+      const plural = clientCount === 1 ? 'cliente' : 'clientes';
+      ctx.fillText(`${clientCount} ${plural} conectado${clientCount === 1 ? '' : 's'}`, canvas.width / 2, canvas.height / 2 + 140);
+    }
   }
 
   // Initial draw
