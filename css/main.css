@@ -9,26 +9,77 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: 'Courier New', monospace;
-  background-color: #000;
+  font-family: 'Courier New', Consolas, Monaco, monospace;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1428 100%);
+  background-attachment: fixed;
 }
 
 #app {
   width: 100%;
   height: 100%;
   position: relative;
-  background-color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+}
+
+/* Animated background effect */
+#app::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(255, 0, 110, 0.05) 0%, transparent 50%);
+  animation: pulse 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 #gameCanvas {
   display: block;
   max-width: 100%;
   max-height: 100%;
-  border: 2px solid #333;
-  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(#0a0e27, #0a0e27) padding-box,
+              linear-gradient(135deg, #00ff88, #00d9ff, #ff006e) border-box;
+  box-shadow: 
+    0 0 30px rgba(0, 255, 136, 0.3),
+    0 0 60px rgba(0, 217, 255, 0.2),
+    0 10px 40px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 1;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* Glow animation for canvas */
+@keyframes canvasGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(0, 255, 136, 0.3),
+      0 0 40px rgba(0, 217, 255, 0.2),
+      0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(0, 255, 136, 0.5),
+      0 0 80px rgba(0, 217, 255, 0.3),
+      0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+}
+
+#gameCanvas {
+  animation: canvasGlow 3s ease-in-out infinite;
 }
 
 #ui-overlay {
@@ -38,4 +89,27 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 10;
 }
+
+/* Scanline effect (optional retro style) */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* You can enable this for a retro CRT effect */
+/*
+#app::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+  z-index: 100;
+}
+*/

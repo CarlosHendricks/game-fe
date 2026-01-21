@@ -30,11 +30,18 @@ export const CONFIG = {
   // Ball dimensions
   BALL_RADIUS: 8,
   
-  // Colors
-  COLOR_BACKGROUND: '#000000',
+  // Colors - Vibrant neon palette
+  COLOR_BACKGROUND: '#0a0e27',
   COLOR_FOREGROUND: '#FFFFFF',
-  COLOR_PLAYER: '#00FF00',     // Player 1 (left side, green)
-  COLOR_AI: '#FF0000',          // Player 2 (right side, red)
-  COLOR_BALL: '#FFFFFF',
-  COLOR_UI: '#00CCFF',
+  COLOR_PLAYER: '#00ff88',     // Player 1 (left side, cyan-green)
+  COLOR_AI: '#ff006e',          // Player 2 (right side, hot pink)
+  COLOR_BALL: '#ffbe0b',        // Yellow/gold
+  COLOR_UI: '#00d9ff',          // Bright cyan
+  COLOR_ACCENT: '#8338ec',      // Purple accent
+  
+  // Visual effects
+  ENABLE_PARTICLES: true,
+  ENABLE_BALL_TRAIL: true,
+  ENABLE_GLOW: true,
+  GLOW_INTENSITY: 20,
 };

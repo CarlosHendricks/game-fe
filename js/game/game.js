@@ -14,6 +14,7 @@ class Game {
     this.inputManager = null;
     
     this.gameState = null;
+    this.prevGameState = null;
     this.connectionStatus = 'Connecting...';
     this.isRunning = false;
     
@@ -48,7 +49,9 @@ class Game {
     // Listen to messages
     this.ws.onMessage((data) => {
       if (data.type === 'game_state') {
+        this.prevGameState = this.gameState;
         this.gameState = data.data;
+        this.detectCollisions();
       }
     });
 
@@ -110,6 +113,54 @@ class Game {
         type: 'reset_game',
         data: {}
       });
+    }
+  }
+
+  detectCollisions() {
+    if (!this.prevGameState || !this.gameState) {
+      return;
+    }
+
+    const prevBall = this.prevGameState.ball;
+    const currBall = this.gameState.ball;
+
+    if (!prevBall || !currBall) {
+      return;
+    }
+
+    // Detect velocity change (collision with paddle)
+    const prevVx = prevBall.vx;
+    const currVx = currBall.vx;
+
+    // If velocity direction changed significantly, there was a collision
+    if (Math.sign(prevVx) !== Math.sign(currVx) && Math.abs(currVx) > 0) {
+      // Scale coordinates to canvas
+      const scaleX = this.canvas.width / CONFIG.FIELD_WIDTH;
+      const scaleY = this.canvas.height / CONFIG.FIELD_HEIGHT;
+      
+      const x = currBall.x * scaleX;
+      const y = currBall.y * scaleY;
+
+      // Determine color based on which side
+      const color = currVx > 0 ? CONFIG.COLOR_PLAYER : CONFIG.COLOR_AI;
+      
+      // Trigger explosion effect
+      this.renderer.triggerExplosion(x, y, color);
+    }
+
+    // Detect score change (goal)
+    if (this.prevGameState.player1Score !== this.gameState.player1Score ||
+        this.prevGameState.player2Score !== this.gameState.player2Score) {
+      
+      const scaleX = this.canvas.width / CONFIG.FIELD_WIDTH;
+      const scaleY = this.canvas.height / CONFIG.FIELD_HEIGHT;
+      
+      const x = currBall.x * scaleX;
+      const y = currBall.y * scaleY;
+
+      // Big explosion on goal
+      const color = CONFIG.COLOR_BALL;
+      this.renderer.triggerExplosion(x, y, color);
     }
   }
 
