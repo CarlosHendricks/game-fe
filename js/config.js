@@ -8,7 +8,7 @@ export const CONFIG = {
   // URL del servidor WebSocket
   // Desarrollo: 'ws://localhost:8080/ws/game'
   // Producción: 'wss://tu-dominio.com/ws/game'
-  SERVER_URL: 'ws://localhost:8080/ws/game',
+  SERVER_URL: 'ws://34.116.247.52:8080/ws/game',
   
   // Configuración del juego
   CANVAS_WIDTH: 800,
